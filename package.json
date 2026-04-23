@@ -1,0 +1,29 @@
+{
+  "name": "ops-schedule-worker",
+  "version": "1.0.0",
+  "description": "Cloudflare Workers - 訂閱续期和排班管理系統",
+  "main": "worker.js",
+  "scripts": {
+    "deploy": "wrangler deploy",
+    "dev": "wrangler dev",
+    "lint": "eslint worker.js",
+    "format": "prettier --write worker.js"
+  },
+  "keywords": [
+    "cloudflare",
+    "workers",
+    "schedule",
+    "subscription",
+    "ops"
+  ],
+  "author": "XiuJie",
+  "license": "MIT",
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20241022.0",
+    "wrangler": "^4.84.1"
+  },
+  "dependencies": {},
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}

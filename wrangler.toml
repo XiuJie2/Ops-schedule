@@ -1,0 +1,34 @@
+name = "ops-schedule"
+main = "worker.js"
+compatibility_date = "2026-04-23"
+compatibility_flags = ["nodejs_compat"]
+
+# 构建配置 (如果未来需要构建步骤)
+# [build]
+# command = "npm run build"
+# upload.format = "service-worker"
+
+# 环境变量配置 (根据实际需要设置)
+# [vars]
+# ENVIRONMENT = "production"
+
+# KV 命名空间 (如果使用 KV 存储)
+# [[kv_namespaces]]
+# binding = "MY_KV"
+# id = "your-kv-namespace-id"
+
+# D1 数据库 (如果使用 D1)
+# [[d1_databases]]
+# binding = "DB"
+# database_name = "ops-schedule-db"
+# database_id = "your-d1-database-id"
+
+# 日志配置
+[log]
+logpush = false
+
+# Worker 类资源配置
+# [[unsafe.bindings]]
+# name = "R2"
+# type = "r2"
+# bucket_name = "my-bucket"
