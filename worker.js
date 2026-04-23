@@ -8,55 +8,63 @@
  */
 
 // ==========================================
-// 1. 导航栏生成函數 (必须放在頁面渲染之前)
+// 1. 导航栏生成函數 (现代化版本)
 // ==========================================
 const getNavHtml = (activePage, role) => `
-  <nav class="bg-white shadow-md sticky top-0 z-50">
+  <nav class="bg-white/80 backdrop-blur-md border-b border-slate-200 sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex justify-between h-16">
         <div class="flex items-center">
           <div class="flex-shrink-0 flex items-center cursor-pointer" onclick="window.location.href='/dashboard'">
-            <i class="fas fa-server text-indigo-600 text-2xl mr-2"></i>
-            <span class="font-bold text-xl text-gray-800 hidden md:block">運維管理系統</span>
-            <span class="font-bold text-xl text-gray-800 block md:hidden">運維系統</span>
+            <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center mr-2">
+              <i class="ph ph-server text-white text-lg"></i>
+            </div>
+            <span class="font-bold text-xl text-slate-900 hidden md:block">運維管理系統</span>
+            <span class="font-bold text-xl text-slate-900 block md:hidden">運維系統</span>
           </div>
-          <div class="hidden md:ml-6 md:flex md:space-x-4">
-            <a href="/dashboard" class="${activePage === 'dashboard' ? 'text-indigo-600 border-b-2 border-indigo-600' : 'text-gray-700 hover:text-gray-900'} px-3 py-2 rounded-md text-sm font-medium transition-colors"><i class="fas fa-tachometer-alt mr-1"></i>控制台</a>
-            <a href="/checklist" class="${activePage === 'checklist' ? 'text-indigo-600 border-b-2 border-indigo-600' : 'text-gray-700 hover:text-gray-900'} px-3 py-2 rounded-md text-sm font-medium transition-colors"><i class="fas fa-clipboard-list mr-1"></i>檢核清單</a>
-            <a href="/checklist/history" class="${activePage === 'history' ? 'text-indigo-600 border-b-2 border-indigo-600' : 'text-gray-700 hover:text-gray-900'} px-3 py-2 rounded-md text-sm font-medium transition-colors"><i class="fas fa-history mr-1"></i>檢核記錄</a>
+          <div class="hidden md:ml-8 md:flex md:space-x-6">
+            <a href="/dashboard" class="nav-link ${activePage === 'dashboard' ? 'active' : ''} px-3 py-2 rounded-md text-sm font-medium text-slate-700 hover:text-primary-600 transition-colors"><i class="ph ph-gauge mr-1.5"></i>控制台</a>
+            <a href="/checklist" class="nav-link ${activePage === 'checklist' ? 'active' : ''} px-3 py-2 rounded-md text-sm font-medium text-slate-700 hover:text-primary-600 transition-colors"><i class="ph ph-check-square mr-1.5"></i>檢核清單</a>
+            <a href="/checklist/history" class="nav-link ${activePage === 'history' ? 'active' : ''} px-3 py-2 rounded-md text-sm font-medium text-slate-700 hover:text-primary-600 transition-colors"><i class="ph ph-clock-counter-clockwise mr-1.5"></i>檢核記錄</a>
             ${role === 'admin' ? `
-            <a href="/subscriptions" class="${activePage === 'subscriptions' ? 'text-indigo-600 border-b-2 border-indigo-600' : 'text-gray-700 hover:text-gray-900'} px-3 py-2 rounded-md text-sm font-medium transition-colors"><i class="fas fa-list mr-1"></i>訂閱管理</a>
-            <a href="/schedule" class="${activePage === 'schedule' ? 'text-indigo-600 border-b-2 border-indigo-600' : 'text-gray-700 hover:text-gray-900'} px-3 py-2 rounded-md text-sm font-medium transition-colors"><i class="fas fa-users mr-1"></i>排班管理</a>
-            <!-- 新增入口 -->
-            <a href="/checklist/manage" class="${activePage === 'manage-checklist' ? 'text-indigo-600 border-b-2 border-indigo-600' : 'text-gray-700 hover:text-gray-900'} px-3 py-2 rounded-md text-sm font-medium transition-colors"><i class="fas fa-tasks mr-1"></i>清單管理</a>
-            <a href="/exclusions" class="${activePage === 'exclusions' ? 'text-indigo-600 border-b-2 border-indigo-600' : 'text-gray-700 hover:text-gray-900'} px-3 py-2 rounded-md text-sm font-medium transition-colors"><i class="fas fa-calendar-times mr-1"></i>日期排除</a>
-            <a href="/config" class="${activePage === 'config' ? 'text-indigo-600 border-b-2 border-indigo-600' : 'text-gray-700 hover:text-gray-900'} px-3 py-2 rounded-md text-sm font-medium transition-colors"><i class="fas fa-cog mr-1"></i>系統配置</a>
+            <a href="/subscriptions" class="nav-link ${activePage === 'subscriptions' ? 'active' : ''} px-3 py-2 rounded-md text-sm font-medium text-slate-700 hover:text-primary-600 transition-colors"><i class="ph ph-bell-simple mr-1.5"></i>訂閱管理</a>
+            <a href="/schedule" class="nav-link ${activePage === 'schedule' ? 'active' : ''} px-3 py-2 rounded-md text-sm font-medium text-slate-700 hover:text-primary-600 transition-colors"><i class="ph ph-users-three mr-1.5"></i>排班管理</a>
+            <a href="/checklist/manage" class="nav-link ${activePage === 'manage-checklist' ? 'active' : ''} px-3 py-2 rounded-md text-sm font-medium text-slate-700 hover:text-primary-600 transition-colors"><i class="ph ph-list-dashes mr-1.5"></i>清單管理</a>
+            <a href="/exclusions" class="nav-link ${activePage === 'exclusions' ? 'active' : ''} px-3 py-2 rounded-md text-sm font-medium text-slate-700 hover:text-primary-600 transition-colors"><i class="ph ph-calendar-x mr-1.5"></i>日期排除</a>
+            <a href="/config" class="nav-link ${activePage === 'config' ? 'active' : ''} px-3 py-2 rounded-md text-sm font-medium text-slate-700 hover:text-primary-600 transition-colors"><i class="ph ph-gear mr-1.5"></i>系統配置</a>
             ` : ''}
           </div>
         </div>
         <div class="flex items-center">
           <div class="hidden md:flex items-center">
-             <span class="text-sm text-gray-500 mr-4"><i class="fas fa-user-circle mr-1"></i>${role === 'admin' ? '管理員' : '員工'}</span>
-             <a href="/api/logout" class="text-gray-700 hover:text-red-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"><i class="fas fa-sign-out-alt mr-1"></i>退出</a>
+            <span class="text-sm text-slate-500 mr-4 flex items-center">
+              <i class="ph ph-user-circle mr-1.5 text-lg"></i>
+              ${role === 'admin' ? '管理員' : '員工'}
+            </span>
+            <a href="/api/logout" class="text-slate-600 hover:text-red-600 px-3 py-2 rounded-md text-sm font-medium transition-colors flex items-center">
+              <i class="ph ph-sign-out mr-1.5"></i>退出
+            </a>
           </div>
           <div class="-mr-2 flex md:hidden">
-            <button type="button" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')" class="bg-white inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"><i class="fas fa-bars text-xl"></i></button>
+            <button type="button" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')" class="bg-white/50 inline-flex items-center justify-center p-2 rounded-md text-slate-500 hover:text-slate-600 hover:bg-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+              <i class="ph ph-list text-xl"></i>
+            </button>
           </div>
         </div>
       </div>
     </div>
-    <!-- 手機端菜單省略 (請保持原有結構，加入 "清單管理" 鏈接即可) -->
-    <div class="hidden md:hidden bg-white border-t border-gray-200" id="mobile-menu">
+    <!-- 手機端菜單 -->
+    <div class="hidden md:hidden bg-white/95 backdrop-blur-md border-t border-slate-200" id="mobile-menu">
       <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 shadow-lg">
-        <a href="/dashboard" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50">控制台</a>
-        <a href="/checklist" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50">檢核清單</a>
-        <a href="/checklist/history" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50">檢核記錄</a>
+        <a href="/dashboard" class="block px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-slate-50 hover:text-primary-600">控制台</a>
+        <a href="/checklist" class="block px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-slate-50 hover:text-primary-600">檢核清單</a>
+        <a href="/checklist/history" class="block px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-slate-50 hover:text-primary-600">檢核記錄</a>
         ${role === 'admin' ? `
-        <a href="/subscriptions" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50">訂閱管理</a>
-        <a href="/schedule" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50">排班管理</a>
-        <a href="/checklist/manage" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50">清單管理</a>
-        <a href="/exclusions" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50">排除日期</a>
-        <a href="/config" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50">系統配置</a>
+        <a href="/subscriptions" class="block px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-slate-50 hover:text-primary-600">訂閱管理</a>
+        <a href="/schedule" class="block px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-slate-50 hover:text-primary-600">排班管理</a>
+        <a href="/checklist/manage" class="block px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-slate-50 hover:text-primary-600">清單管理</a>
+        <a href="/exclusions" class="block px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-slate-50 hover:text-primary-600">日期排除</a>
+        <a href="/config" class="block px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-slate-50 hover:text-primary-600">系統配置</a>
         ` : ''}
         <a href="/api/logout" class="block px-3 py-2 rounded-md text-base font-medium text-red-600 hover:bg-red-50">退出登錄</a>
       </div>
@@ -516,126 +524,213 @@ const registerPage = `
 // 控制台頁面 (修正版：提交後重置也能正確顯示「已完成」)
 const dashboardPage = (role) => `
 <!DOCTYPE html>
-<html>
+<html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>控制台</title>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              50: '#eff6ff',
+              100: '#dbeafe',
+              200: '#bfdbfe',
+              300: '#93c5fd',
+              400: '#60a5fa',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+            },
+            slate: {
+              50: '#f8fafc',
+              100: '#f1f5f9',
+              200: '#e2e8f0',
+              300: '#cbd5e1',
+              400: '#94a3b8',
+              500: '#64748b',
+              600: '#475569',
+              700: '#334155',
+              800: '#1e293b',
+              900: '#0f172a',
+            },
+          },
+          fontFamily: {
+            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+          },
+          boxShadow: {
+            'soft': '0 2px 15px -3px rgba(0, 0, 0, 0.07)',
+            'glow': '0 0 15px rgba(59, 130, 246, 0.3)',
+          },
+        },
+      },
+    }
+  </script>
   <style>
-    .glass-card { background: white; border-radius: 1rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); transition: transform 0.2s; }
-    .glass-card:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
-    .list-item { transition: background-color 0.2s; }
-    .list-item:hover { background-color: #f9fafb; }
+    /* Dashboard 特定样式 */
+    .stat-card {
+      position: relative;
+      padding: 1.5rem;
+      background: white;
+      border-radius: 0.75rem;
+      border: 1px solid var(--slate-200);
+      box-shadow: 0 1px 3px 0 rgba(0,0,0,0.1);
+      transition: all 0.2s ease;
+      overflow: hidden;
+    }
+
+    .stat-card:hover {
+      box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+      transform: translateY(-2px);
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary), #60a5fa);
+    }
+
+    .stat-card.warning::before { background: linear-gradient(90deg, #fbbf24, #f59e0b); }
+    .stat-card.danger::before { background: linear-gradient(90deg, #f87171, #ef4444); }
+    .stat-card.success::before { background: linear-gradient(90deg, #34d399, #10b981); }
+
+    .card {
+      background: white;
+      border-radius: 0.75rem;
+      border: 1px solid var(--slate-200);
+      box-shadow: 0 1px 3px 0 rgba(0,0,0,0.1);
+      transition: all 0.2s ease;
+    }
+
+    .card:hover {
+      box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+      transform: translateY(-2px);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .fade-in {
+      animation: fadeIn 0.3s ease-out;
+    }
   </style>
 </head>
-<body class="bg-gray-50 min-h-screen">
+<body class="bg-slate-50 min-h-screen">
   ${getNavHtml('dashboard', role)}
   
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <div class="mb-8 flex justify-between items-end">
       <div>
-        <h1 class="text-3xl font-bold text-gray-800" id="greeting">早安</h1>
-        <p class="text-gray-500 mt-1">今日系統運行概況</p>
+        <h1 class="text-3xl font-bold text-slate-900" id="greeting">早安</h1>
+        <p class="text-slate-500 mt-1">今日系統運行概況</p>
       </div>
-      <div class="text-right text-sm text-gray-400">
+      <div class="text-right text-sm text-slate-400">
         最後更新: <span id="lastUpdate">-</span>
       </div>
     </div>
 
     <!-- 1. 核心指標卡片 -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8 fade-in">
       
       <!-- 今日排班 -->
-      <div class="glass-card p-6 border-l-4 border-blue-500">
+      <div class="stat-card">
         <div class="flex justify-between items-start">
           <div>
-            <p class="text-sm font-medium text-gray-500">今日排班</p>
-            <h3 class="text-2xl font-bold text-gray-800 mt-1 truncate" id="todayStaff">-</h3>
+            <p class="text-sm font-medium text-slate-500">今日排班</p>
+            <h3 class="text-2xl font-bold text-slate-900 mt-1 truncate" id="todayStaff">-</h3>
           </div>
-          <div class="p-2 bg-blue-50 rounded-lg text-blue-600"><i class="fas fa-calendar-day text-xl"></i></div>
+          <div class="p-2 bg-primary-100 rounded-lg text-primary-600"><i class="ph ph-calendar-day text-xl"></i></div>
         </div>
-        <p class="text-xs text-gray-500 mt-2" id="scheduleStatus">加載中...</p>
+        <p class="text-xs text-slate-500 mt-2" id="scheduleStatus">加載中...</p>
       </div>
 
       <!-- 排除日期統計 -->
-      <div class="glass-card p-6 border-l-4 border-red-500">
+      <div class="stat-card warning">
         <div class="flex justify-between items-start">
           <div>
-            <p class="text-sm font-medium text-gray-500">排除日期</p>
-            <h3 class="text-2xl font-bold text-gray-800 mt-1" id="exclusionCount">0</h3>
+            <p class="text-sm font-medium text-slate-500">排除日期</p>
+            <h3 class="text-2xl font-bold text-slate-900 mt-1" id="exclusionCount">0</h3>
           </div>
-          <div class="p-2 bg-red-50 rounded-lg text-red-600"><i class="fas fa-calendar-times text-xl"></i></div>
+          <div class="p-2 bg-red-100 rounded-lg text-red-600"><i class="ph ph-calendar-x text-xl"></i></div>
         </div>
-        <p class="text-xs text-gray-500 mt-2">生效中的特殊日期</p>
+        <p class="text-xs text-slate-500 mt-2">生效中的特殊日期</p>
       </div>
 
       <!-- 員工總數 -->
-      <div class="glass-card p-6 border-l-4 border-green-500">
+      <div class="stat-card success">
         <div class="flex justify-between items-start">
           <div>
-            <p class="text-sm font-medium text-gray-500">員工總數</p>
-            <h3 class="text-2xl font-bold text-gray-800 mt-1" id="staffCount">0</h3>
+            <p class="text-sm font-medium text-slate-500">員工總數</p>
+            <h3 class="text-2xl font-bold text-slate-900 mt-1" id="staffCount">0</h3>
           </div>
-          <div class="p-2 bg-green-50 rounded-lg text-green-600"><i class="fas fa-users text-xl"></i></div>
+          <div class="p-2 bg-green-100 rounded-lg text-green-600"><i class="ph ph-users text-xl"></i></div>
         </div>
-        <p class="text-xs text-gray-500 mt-2">活躍員工</p>
+        <p class="text-xs text-slate-500 mt-2">活躍員工</p>
       </div>
 
       <!-- 訂閱統計 -->
-      <div class="glass-card p-6 border-l-4 border-yellow-500">
+      <div class="stat-card danger">
         <div class="flex justify-between items-start">
           <div>
-            <p class="text-sm font-medium text-gray-500">訂閱狀態</p>
+            <p class="text-sm font-medium text-slate-500">訂閱狀態</p>
             <div class="flex items-baseline mt-1">
-                <h3 class="text-2xl font-bold text-gray-800" id="totalSubsCount">0</h3>
-                <span class="text-xs text-gray-500 ml-2">總數</span>
+                <h3 class="text-2xl font-bold text-slate-900" id="totalSubsCount">0</h3>
+                <span class="text-xs text-slate-500 ml-2">總數</span>
             </div>
           </div>
-          <div class="p-2 bg-yellow-50 rounded-lg text-yellow-600"><i class="fas fa-bell text-xl"></i></div>
+          <div class="p-2 bg-yellow-100 rounded-lg text-yellow-600"><i class="ph ph-bell text-xl"></i></div>
         </div>
         <p class="text-xs text-red-500 mt-2 font-bold" id="expiringText">0 項即將到期</p>
       </div>
     </div>
 
     <!-- 2. 主要功能區塊 -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8 fade-in">
       <!-- 左側：今日檢核 -->
-      <div class="glass-card lg:col-span-2 flex flex-col">
-        <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50 rounded-t-xl">
-          <h3 class="text-lg font-bold text-gray-800"><i class="fas fa-clipboard-check mr-2 text-indigo-500"></i>今日機房檢核</h3>
-          <a href="/checklist" class="text-sm text-indigo-600 hover:text-indigo-800 font-medium">進入檢核 &rarr;</a>
+      <div class="card lg:col-span-2 flex flex-col">
+        <div class="px-6 py-4 border-b border-slate-200 flex justify-between items-center bg-slate-50 rounded-t-xl">
+          <h3 class="text-lg font-bold text-slate-900"><i class="ph ph-check-circle mr-2 text-primary-500"></i>今日機房檢核</h3>
+          <a href="/checklist" class="text-sm text-primary-600 hover:text-primary-700 font-medium">進入檢核 &rarr;</a>
         </div>
         <div class="p-6 flex-grow" id="todayChecklist">
-          <div class="flex flex-col items-center justify-center py-8 text-gray-400">
-            <i class="fas fa-spinner fa-spin text-3xl mb-3"></i>
-            <p>正在同步數據...</p>
+          <div class="flex flex-col items-center justify-center py-8 text-slate-400">
+            <i class="ph ph-spinner ph-spin text-3xl mb-3"></i>
+            <p class="text-sm">正在同步數據...</p>
           </div>
         </div>
       </div>
       
       <!-- 右側：最近排除日期 -->
-      <div class="glass-card flex flex-col">
-        <div class="px-6 py-4 border-b border-gray-100 bg-gray-50 rounded-t-xl flex justify-between items-center">
-          <h3 class="text-lg font-bold text-gray-800"><i class="fas fa-calendar-alt mr-2 text-red-500"></i>最近排除日期</h3>
-          <a href="/exclusions" class="${role === 'admin' ? '' : 'hidden'} text-sm text-indigo-600 hover:text-indigo-800 font-medium">日期管理 &rarr;</a>
+      <div class="card flex flex-col">
+        <div class="px-6 py-4 border-b border-slate-200 bg-slate-50 rounded-t-xl flex justify-between items-center">
+          <h3 class="text-lg font-bold text-slate-900"><i class="ph ph-calendar-slash mr-2 text-red-500"></i>最近排除日期</h3>
+          <a href="/exclusions" class="${role === 'admin' ? '' : 'hidden'} text-sm text-primary-600 hover:text-primary-700 font-medium">日期管理 &rarr;</a>
         </div>
         <div class="p-4 flex-grow overflow-y-auto max-h-64" id="recentExclusionsList">
-          <div class="text-center py-4 text-gray-400 text-sm">加載中...</div>
+          <div class="text-center py-4 text-slate-400 text-sm">加載中...</div>
         </div>
       </div>
     </div>
 
     <!-- 3. 即將到期訂閱 -->
-    <div class="glass-card mb-8">
-        <div class="px-6 py-4 border-b border-gray-100 bg-gray-50 rounded-t-xl flex justify-between items-center">
-          <h3 class="text-lg font-bold text-gray-800"><i class="fas fa-clock mr-2 text-yellow-500"></i>即將到期訂閱</h3>
-          <a href="/subscriptions" class="${role === 'admin' ? '' : 'hidden'} text-sm text-indigo-600 hover:text-indigo-800 font-medium">管理訂閱 &rarr;</a>
+    <div class="card mb-8">
+        <div class="px-6 py-4 border-b border-slate-200 bg-slate-50 rounded-t-xl flex justify-between items-center">
+          <h3 class="text-lg font-bold text-slate-900"><i class="ph ph-warning mr-2 text-yellow-500"></i>即將到期訂閱</h3>
+          <a href="/subscriptions" class="${role === 'admin' ? '' : 'hidden'} text-sm text-primary-600 hover:text-primary-700 font-medium">管理訂閱 &rarr;</a>
         </div>
         <div class="p-6">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="expiringSubscriptionsList">
-                <div class="text-center py-4 text-gray-400 col-span-full">加載中...</div>
+                <div class="text-center py-4 text-slate-400 col-span-full">加載中...</div>
             </div>
         </div>
     </div>
