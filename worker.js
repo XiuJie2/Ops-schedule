@@ -85,7 +85,7 @@ const loginPage = `
   <div class="login-box p-8 rounded-xl w-full max-w-md">
     <div class="text-center mb-8">
       <h1 class="text-2xl font-bold text-gray-800"><i class="fas fa-server mr-2"></i>運維管理系統</h1>
-      <p class="text-gray-600 mt-2">安全登錄</p>
+      <p class="text-gray-600 mt-2">非安全登錄</p>
     </div>
     
     <form id="loginForm" class="space-y-6">
