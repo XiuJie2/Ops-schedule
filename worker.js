@@ -1,62 +1,265 @@
-// 訂閱续期和排班管理系統 - 完整優化版
-// 功能：訂閱管理、排班管理、排除日期、機房檢核、多用户權限、响應式UI
+// 訂閱续期和排班管理系統 - 現代化專業版
+// 功能：訂閱管理、排班管理、排除日期、機房檢核、多用户權限、響應式UI
+// 設計系統: Professional Blue-Slate Theme with Modern UX (2025)
+//
+// 主要優化:
+// - Tailwind CSS v3 (CDN)
+// - Phosphor Icons (替代 Font Awesome)
+// - 藍灰色專業配色
+// - 現代卡片與動效
+// - 一致的設計語言
+// - 更好的響應式體驗
 
-/**
- * 通用导航栏生成函數 (前端用)
- * @param {string} activePage 当前頁面標識
- * @param {string} role 用户角色 'admin' | 'user'
- */
+// ==========================================
+// 🎨 全局設計系統 (加入每個頁面的 head)
+// ==========================================
+const DESIGN_SYSTEM_HEAD = `
+  <script src="https://cdn.tailwindcss.com"><\/script>
+  <script src="https://unpkg.com/@phosphor-icons/web"><\/script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              50: '#eff6ff',
+              100: '#dbeafe',
+              200: '#bfdbfe',
+              300: '#93c5fd',
+              400: '#60a5fa',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+              800: '#1e40af',
+            },
+            slate: {
+              50: '#f8fafc',
+              100: '#f1f5f9',
+              200: '#e2e8f0',
+              300: '#cbd5e1',
+              400: '#94a3b8',
+            },
+          },
+          fontFamily: {
+            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+          },
+          boxShadow: {
+            'soft': '0 2px 15px -3px rgba(0, 0, 0, 0.07)',
+            'glow': '0 0 15px rgba(59, 130, 246, 0.3)',
+          },
+        },
+      },
+    }
+  <\/script>
+  <style>
+    :root {
+      --primary: #3b82f6;
+      --primary-light: #dbeafe;
+      --danger: #ef4444;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --slate-50: #f8fafc;
+      --slate-100: #f1f5f9;
+      --slate-200: #e2e8f0;
+    }
+
+    body {
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -moz-osx-font-smoothing: grayscale;
+      background: var(--slate-50);
+    }
+
+    .card {
+      background: white;
+      border-radius: 0.75rem;
+      border: 1px solid var(--slate-200);
+      box-shadow: 0 1px 3px 0 rgba(0,0,0,0.1);
+      transition: all 0.2s ease;
+    }
+
+    .card:hover {
+      box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+      transform: translateY(-2px);
+    }
+
+    .btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.5rem 1rem;
+      border-radius: 0.5rem;
+      font-weight: 500;
+      transition: all 0.2s ease;
+      border: none;
+      cursor: pointer;
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, var(--primary) 0%, #2563eb 100%);
+      color: white;
+      box-shadow: 0 4px 14px 0 rgba(59, 130, 246, 0.3);
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px 0 rgba(59, 130, 246, 0.4);
+    }
+
+    .input {
+      width: 100%;
+      padding: 0.625rem 0.875rem;
+      border: 1px solid var(--slate-200);
+      border-radius: 0.5rem;
+      transition: all 0.2s ease;
+      background: white;
+    }
+
+    .input:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.25rem 0.625rem;
+      border-radius: 9999px;
+      font-size: 0.75rem;
+      font-weight: 500;
+    }
+
+    .badge-success { background: #d1fae5; color: #065f46; }
+    .badge-warning { background: #fef3c7; color: #92400e; }
+    .badge-danger { background: #fee2e2; color: #991b1b; }
+    .badge-primary { background: var(--primary-light); color: var(--primary); }
+
+    .nav-link {
+      position: relative;
+      transition: color 0.2s ease;
+    }
+
+    .nav-link.active {
+      color: var(--primary);
+      font-weight: 600;
+    }
+
+    .nav-link.active::after {
+      content: '';
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 2px;
+      background: var(--primary);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .fade-in {
+      animation: fadeIn 0.3s ease-out;
+    }
+
+    .toast {
+      position: fixed;
+      top: 1rem;
+      right: 1rem;
+      padding: 0.75rem 1rem;
+      border-radius: 0.5rem;
+      color: white;
+      font-weight: 500;
+      box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+      z-index: 9999;
+      animation: slideIn 0.3s ease-out;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    @keyframes slideIn {
+      from { transform: translateX(100%); opacity: 0; }
+      to { transform: translateX(0); opacity: 1; }
+    }
+
+    .toast.success { background: var(--success); }
+    .toast.error { background: var(--danger); }
+    .toast.warning { background: var(--warning); }
+    .toast.info { background: var(--primary); }
+  </style>
+`;
 
 // ==========================================
 // 1. 导航栏生成函數 (必须放在頁面渲染之前)
 // ==========================================
+// 1. 导航栏生成函數 (必须放在頁面渲染之前)
+// ==========================================
+// 🎨 全局設計系統 (加入每個頁面的 head)
+// ==========================================
+// 注意：設計系統代碼已插入到每個頁面的 <head> 中，無需在此定義
+
+// ==========================================
+// 1. 导航栏生成函數 (现代化版本)
+// ==========================================
 const getNavHtml = (activePage, role) => `
-  <nav class="bg-white shadow-md sticky top-0 z-50">
+  <nav class="bg-white/80 backdrop-blur-md border-b border-slate-200 sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
       <div class="flex justify-between h-16">
         <div class="flex items-center">
           <div class="flex-shrink-0 flex items-center cursor-pointer" onclick="window.location.href='/dashboard'">
-            <i class="fas fa-server text-indigo-600 text-2xl mr-2"></i>
-            <span class="font-bold text-xl text-gray-800 hidden md:block">運維管理系統</span>
-            <span class="font-bold text-xl text-gray-800 block md:hidden">運維系統</span>
+            <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-primary-500 to-primary-600 flex items-center justify-center mr-2">
+              <i class="ph ph-server text-white text-lg"></i>
+            </div>
+            <span class="font-bold text-xl text-slate-900 hidden md:block">運維管理系統</span>
+            <span class="font-bold text-xl text-slate-900 block md:hidden">運維系統</span>
           </div>
-          <div class="hidden md:ml-6 md:flex md:space-x-4">
-            <a href="/dashboard" class="${activePage === 'dashboard' ? 'text-indigo-600 border-b-2 border-indigo-600' : 'text-gray-700 hover:text-gray-900'} px-3 py-2 rounded-md text-sm font-medium transition-colors"><i class="fas fa-tachometer-alt mr-1"></i>控制台</a>
-            <a href="/checklist" class="${activePage === 'checklist' ? 'text-indigo-600 border-b-2 border-indigo-600' : 'text-gray-700 hover:text-gray-900'} px-3 py-2 rounded-md text-sm font-medium transition-colors"><i class="fas fa-clipboard-list mr-1"></i>檢核清單</a>
-            <a href="/checklist/history" class="${activePage === 'history' ? 'text-indigo-600 border-b-2 border-indigo-600' : 'text-gray-700 hover:text-gray-900'} px-3 py-2 rounded-md text-sm font-medium transition-colors"><i class="fas fa-history mr-1"></i>檢核記錄</a>
+          <div class="hidden md:ml-8 md:flex md:space-x-6">
+            <a href="/dashboard" class="nav-link ${activePage === 'dashboard' ? 'active' : ''} px-3 py-2 rounded-md text-sm font-medium text-slate-700 hover:text-primary-600 transition-colors"><i class="ph ph-gauge mr-1.5"></i>控制台</a>
+            <a href="/checklist" class="nav-link ${activePage === 'checklist' ? 'active' : ''} px-3 py-2 rounded-md text-sm font-medium text-slate-700 hover:text-primary-600 transition-colors"><i class="ph ph-check-square mr-1.5"></i>檢核清單</a>
+            <a href="/checklist/history" class="nav-link ${activePage === 'history' ? 'active' : ''} px-3 py-2 rounded-md text-sm font-medium text-slate-700 hover:text-primary-600 transition-colors"><i class="ph ph-clock-counter-clockwise mr-1.5"></i>檢核記錄</a>
             ${role === 'admin' ? `
-            <a href="/subscriptions" class="${activePage === 'subscriptions' ? 'text-indigo-600 border-b-2 border-indigo-600' : 'text-gray-700 hover:text-gray-900'} px-3 py-2 rounded-md text-sm font-medium transition-colors"><i class="fas fa-list mr-1"></i>訂閱管理</a>
-            <a href="/schedule" class="${activePage === 'schedule' ? 'text-indigo-600 border-b-2 border-indigo-600' : 'text-gray-700 hover:text-gray-900'} px-3 py-2 rounded-md text-sm font-medium transition-colors"><i class="fas fa-users mr-1"></i>排班管理</a>
-            <!-- 新增入口 -->
-            <a href="/checklist/manage" class="${activePage === 'manage-checklist' ? 'text-indigo-600 border-b-2 border-indigo-600' : 'text-gray-700 hover:text-gray-900'} px-3 py-2 rounded-md text-sm font-medium transition-colors"><i class="fas fa-tasks mr-1"></i>清單管理</a>
-            <a href="/exclusions" class="${activePage === 'exclusions' ? 'text-indigo-600 border-b-2 border-indigo-600' : 'text-gray-700 hover:text-gray-900'} px-3 py-2 rounded-md text-sm font-medium transition-colors"><i class="fas fa-calendar-times mr-1"></i>日期排除</a>
-            <a href="/config" class="${activePage === 'config' ? 'text-indigo-600 border-b-2 border-indigo-600' : 'text-gray-700 hover:text-gray-900'} px-3 py-2 rounded-md text-sm font-medium transition-colors"><i class="fas fa-cog mr-1"></i>系統配置</a>
+            <a href="/subscriptions" class="nav-link ${activePage === 'subscriptions' ? 'active' : ''} px-3 py-2 rounded-md text-sm font-medium text-slate-700 hover:text-primary-600 transition-colors"><i class="ph ph-bell-simple mr-1.5"></i>訂閱管理</a>
+            <a href="/schedule" class="nav-link ${activePage === 'schedule' ? 'active' : ''} px-3 py-2 rounded-md text-sm font-medium text-slate-700 hover:text-primary-600 transition-colors"><i class="ph ph-users-three mr-1.5"></i>排班管理</a>
+            <a href="/checklist/manage" class="nav-link ${activePage === 'manage-checklist' ? 'active' : ''} px-3 py-2 rounded-md text-sm font-medium text-slate-700 hover:text-primary-600 transition-colors"><i class="ph ph-list-dashes mr-1.5"></i>清單管理</a>
+            <a href="/exclusions" class="nav-link ${activePage === 'exclusions' ? 'active' : ''} px-3 py-2 rounded-md text-sm font-medium text-slate-700 hover:text-primary-600 transition-colors"><i class="ph ph-calendar-x mr-1.5"></i>日期排除</a>
+            <a href="/config" class="nav-link ${activePage === 'config' ? 'active' : ''} px-3 py-2 rounded-md text-sm font-medium text-slate-700 hover:text-primary-600 transition-colors"><i class="ph ph-gear mr-1.5"></i>系統配置</a>
             ` : ''}
           </div>
         </div>
         <div class="flex items-center">
           <div class="hidden md:flex items-center">
-             <span class="text-sm text-gray-500 mr-4"><i class="fas fa-user-circle mr-1"></i>${role === 'admin' ? '管理員' : '員工'}</span>
-             <a href="/api/logout" class="text-gray-700 hover:text-red-600 px-3 py-2 rounded-md text-sm font-medium transition-colors"><i class="fas fa-sign-out-alt mr-1"></i>退出</a>
+            <span class="text-sm text-slate-500 mr-4 flex items-center">
+              <i class="ph ph-user-circle mr-1.5 text-lg"></i>
+              ${role === 'admin' ? '管理員' : '員工'}
+            </span>
+            <a href="/api/logout" class="text-slate-600 hover:text-red-600 px-3 py-2 rounded-md text-sm font-medium transition-colors flex items-center">
+              <i class="ph ph-sign-out mr-1.5"></i>退出
+            </a>
           </div>
           <div class="-mr-2 flex md:hidden">
-            <button type="button" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')" class="bg-white inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"><i class="fas fa-bars text-xl"></i></button>
+            <button type="button" onclick="document.getElementById('mobile-menu').classList.toggle('hidden')" class="bg-white/50 inline-flex items-center justify-center p-2 rounded-md text-slate-500 hover:text-slate-600 hover:bg-white focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary-500">
+              <i class="ph ph-list text-xl"></i>
+            </button>
           </div>
         </div>
       </div>
     </div>
-    <!-- 手機端菜單省略 (請保持原有結構，加入 "清單管理" 鏈接即可) -->
-    <div class="hidden md:hidden bg-white border-t border-gray-200" id="mobile-menu">
+    <!-- 手機端菜單 -->
+    <div class="hidden md:hidden bg-white/95 backdrop-blur-md border-t border-slate-200" id="mobile-menu">
       <div class="px-2 pt-2 pb-3 space-y-1 sm:px-3 shadow-lg">
-        <a href="/dashboard" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50">控制台</a>
-        <a href="/checklist" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50">檢核清單</a>
-        <a href="/checklist/history" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50">檢核記錄</a>
+        <a href="/dashboard" class="block px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-slate-50 hover:text-primary-600">控制台</a>
+        <a href="/checklist" class="block px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-slate-50 hover:text-primary-600">檢核清單</a>
+        <a href="/checklist/history" class="block px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-slate-50 hover:text-primary-600">檢核記錄</a>
         ${role === 'admin' ? `
-        <a href="/subscriptions" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50">訂閱管理</a>
-        <a href="/schedule" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50">排班管理</a>
-        <a href="/checklist/manage" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50">清單管理</a>
-        <a href="/exclusions" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50">排除日期</a>
-        <a href="/config" class="block px-3 py-2 rounded-md text-base font-medium text-gray-700 hover:bg-gray-50">系統配置</a>
+        <a href="/subscriptions" class="block px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-slate-50 hover:text-primary-600">訂閱管理</a>
+        <a href="/schedule" class="block px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-slate-50 hover:text-primary-600">排班管理</a>
+        <a href="/checklist/manage" class="block px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-slate-50 hover:text-primary-600">清單管理</a>
+        <a href="/exclusions" class="block px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-slate-50 hover:text-primary-600">日期排除</a>
+        <a href="/config" class="block px-3 py-2 rounded-md text-base font-medium text-slate-700 hover:bg-slate-50 hover:text-primary-600">系統配置</a>
         ` : ''}
         <a href="/api/logout" class="block px-3 py-2 rounded-md text-base font-medium text-red-600 hover:bg-red-50">退出登錄</a>
       </div>
@@ -67,83 +270,215 @@ const getNavHtml = (activePage, role) => `
 // 定义HTML模板 - 登錄頁面
 const loginPage = `
 <!DOCTYPE html>
-<html>
+<html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>登錄 - 運維管理系統</title>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <!-- Modern Tailwind CSS v3 -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Phosphor Icons (Professional Linear Icons) -->
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              50: '#eff6ff',
+              100: '#dbeafe',
+              200: '#bfdbfe',
+              300: '#93c5fd',
+              400: '#60a5fa',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+              800: '#1e40af',
+            },
+            slate: {
+              50: '#f8fafc',
+              100: '#f1f5f9',
+              200: '#e2e8f0',
+              300: '#cbd5e1',
+              400: '#94a3b8',
+            },
+          },
+          fontFamily: {
+            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'Helvetica Neue', 'Arial', 'sans-serif'],
+          },
+          boxShadow: {
+            'soft': '0 2px 15px -3px rgba(0, 0, 0, 0.07)',
+            'glow': '0 0 15px rgba(59, 130, 246, 0.3)',
+          },
+        },
+      },
+    }
+  </script>
   <style>
-    .login-container { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; }
-    .login-box { backdrop-filter: blur(8px); background-color: rgba(255, 255, 255, 0.9); box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15); }
-    .btn-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); transition: all 0.3s; }
-    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); }
+    /* Design System - Global Styles */
+    :root {
+      --primary: #3b82f6;
+      --primary-light: #dbeafe;
+      --danger: #ef4444;
+      --success: #10b981;
+      --warning: #f59e0b;
+      --slate-50: #f8fafc;
+      --slate-100: #f1f5f9;
+      --slate-200: #e2e8f0;
+      --slate-300: #cbd5e1;
+    }
+
+    body {
+      background: linear-gradient(135deg, #f8fafc 0%, #e0f2fe 50%, #f0f9ff 100%);
+      min-height: 100vh;
+    }
+
+    .login-card {
+      backdrop-filter: blur(20px);
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+      box-shadow: 0 4px 14px 0 rgba(59, 130, 246, 0.3);
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px 0 rgba(59, 130, 246, 0.4);
+    }
+
+    .input:focus {
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
   </style>
 </head>
-<body class="login-container flex items-center justify-center px-4">
-  <div class="login-box p-8 rounded-xl w-full max-w-md">
-    <div class="text-center mb-8">
-      <h1 class="text-2xl font-bold text-gray-800"><i class="fas fa-server mr-2"></i>運維管理系統</h1>
-      <p class="text-gray-600 mt-2">非安全登錄</p>
-    </div>
-    
-    <form id="loginForm" class="space-y-6">
-      <div>
-        <label for="username" class="block text-sm font-medium text-gray-700 mb-1"><i class="fas fa-user mr-2"></i>用户名</label>
-        <input type="text" id="username" name="username" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-      </div>
-      
-      <div>
-        <label for="password" class="block text-sm font-medium text-gray-700 mb-1"><i class="fas fa-lock mr-2"></i>密碼</label>
-        <input type="password" id="password" name="password" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-      </div>
-      
-      <button type="submit" class="btn-primary w-full py-3 rounded-lg text-white font-medium focus:outline-none">
-        <i class="fas fa-sign-in-alt mr-2"></i>登錄
-      </button>
-      
-      <div class="text-center mt-4">
-        <a href="/register" class="text-sm text-indigo-600 hover:text-indigo-800">没有賬號？點击註冊</a>
+<body class="flex items-center justify-center px-4 py-8">
+  <div class="w-full max-w-md fade-in">
+    <div class="login-card p-8 rounded-2xl shadow-soft">
+      <div class="text-center mb-8">
+        <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-primary-500 to-primary-600 text-white mb-4 shadow-glow">
+          <i class="ph ph-server text-3xl"></i>
+        </div>
+        <h1 class="text-2xl font-bold text-slate-900 mt-4 tracking-tight">運維管理系統</h1>
+        <p class="text-slate-500 mt-1 text-sm">歡迎回來，請登錄您的賬戶</p>
       </div>
 
-      <div id="errorMsg" class="text-red-500 text-center text-sm"></div>
-    </form>
+      <form id="loginForm" class="space-y-5">
+        <div>
+          <label for="username" class="block text-sm font-medium text-slate-700 mb-2">
+            <i class="ph ph-user mr-2 text-slate-400"></i>用户名
+          </label>
+          <input
+            type="text"
+            id="username"
+            name="username"
+            required
+            class="input bg-white border-slate-200 rounded-lg focus:border-primary-500 focus:ring-primary-500"
+            placeholder="請輸入用户名"
+            autocomplete="username"
+          >
+        </div>
+
+        <div>
+          <label for="password" class="block text-sm font-medium text-slate-700 mb-2">
+            <i class="ph ph-lock-key mr-2 text-slate-400"></i>密碼
+          </label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            required
+            class="input bg-white border-slate-200 rounded-lg focus:border-primary-500 focus:ring-primary-500"
+            placeholder="請輸入密碼"
+            autocomplete="current-password"
+          >
+        </div>
+
+        <button type="submit" class="btn btn-primary w-full py-3 text-base font-medium">
+          <i class="ph ph-sign-in text-xl"></i>
+          <span id="loginBtnText">登錄</span>
+        </button>
+      </form>
+
+      <div class="mt-6 text-center">
+        <p class="text-sm text-slate-500">
+          還沒有賬號？
+          <a href="/register" class="text-primary-600 hover:text-primary-700 font-medium transition-colors">
+            立即註冊
+          </a>
+        </p>
+      </div>
+
+      <div id="errorMsg" class="mt-4 hidden">
+        <div class="rounded-lg bg-red-50 border border-red-200 text-red-700 px-4 py-3 text-sm flex items-center fade-in">
+          <i class="ph ph-warning-circle mr-2 text-lg"></i>
+          <span id="errorText"></span>
+        </div>
+      </div>
+    </div>
+
+    <p class="text-center text-xs text-slate-400 mt-6">
+      安全登錄 · 您的數據受加密保護
+    </p>
   </div>
-  
+
   <script>
-    document.getElementById('loginForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const username = document.getElementById('username').value;
-      const password = document.getElementById('password').value;
-      const button = e.target.querySelector('button');
-      const originalContent = button.innerHTML;
-      
-      button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>登錄中...';
-      button.disabled = true;
-      document.getElementById('errorMsg').textContent = '';
-      
-      try {
-        const response = await fetch('/api/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username, password })
-        });
-        
-        const result = await response.json();
-        
-        if (result.success) {
-          window.location.href = '/dashboard';
-        } else {
-          document.getElementById('errorMsg').textContent = result.message || '登錄失敗';
-          button.innerHTML = originalContent;
-          button.disabled = false;
+    document.addEventListener('DOMContentLoaded', () => {
+      const form = document.getElementById('loginForm');
+      const btnText = document.getElementById('loginBtnText');
+      const errorMsg = document.getElementById('errorMsg');
+      const errorText = document.getElementById('errorText');
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const username = document.getElementById('username').value.trim();
+        const password = document.getElementById('password').value;
+        const button = form.querySelector('button');
+
+        if (!username || !password) {
+          showError('請填寫完整信息');
+          return;
         }
-      } catch (error) {
-        document.getElementById('errorMsg').textContent = '網路錯誤，請稍後再試';
-        button.innerHTML = originalContent;
-        button.disabled = false;
+
+        button.disabled = true;
+        const originalContent = btnText.textContent;
+        btnText.textContent = '登錄中...';
+        errorMsg.classList.add('hidden');
+
+        try {
+          const response = await fetch('/api/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password })
+          });
+
+          const result = await response.json();
+
+          if (result.success) {
+            window.location.href = '/dashboard';
+          } else {
+            showError(result.message || '登錄失敗，請檢查用戶名和密碼');
+            button.disabled = false;
+            btnText.textContent = originalContent;
+          }
+        } catch (error) {
+          showError('網路錯誤，請稍後再試');
+          button.disabled = false;
+          btnText.textContent = originalContent;
+        }
+      });
+
+      function showError(message) {
+        errorText.textContent = message;
+        errorMsg.classList.remove('hidden');
+        errorMsg.classList.add('fade-in');
       }
+
+      document.getElementById('username').focus();
     });
   </script>
 </body>
@@ -153,91 +488,200 @@ const loginPage = `
 // 註冊頁面
 const registerPage = `
 <!DOCTYPE html>
-<html>
+<html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>註冊 - 運維管理系統</title>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              50: '#eff6ff',
+              100: '#dbeafe',
+              200: '#bfdbfe',
+              300: '#93c5fd',
+              400: '#60a5fa',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+            },
+          },
+        },
+      },
+    }
+  </script>
   <style>
-    .login-container { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; }
-    .login-box { backdrop-filter: blur(8px); background-color: rgba(255, 255, 255, 0.9); box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15); }
-    .btn-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); transition: all 0.3s; }
+    body {
+      background: linear-gradient(135deg, #f8fafc 0%, #e0f2fe 50%, #f0f9ff 100%);
+      min-height: 100vh;
+    }
+
+    .login-card {
+      backdrop-filter: blur(20px);
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+      box-shadow: 0 4px 14px 0 rgba(59, 130, 246, 0.3);
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px 0 rgba(59, 130, 246, 0.4);
+    }
+
+    .input:focus {
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
   </style>
 </head>
-<body class="login-container flex items-center justify-center px-4">
-  <div class="login-box p-8 rounded-xl w-full max-w-md">
-    <div class="text-center mb-8">
-      <h1 class="text-2xl font-bold text-gray-800"><i class="fas fa-user-plus mr-2"></i>註冊賬號</h1>
-      <p class="text-gray-600 mt-2">加入運維管理系統</p>
+<body class="flex items-center justify-center px-4 py-8">
+  <div class="w-full max-w-md fade-in">
+    <div class="login-card p-8 rounded-2xl shadow-soft">
+      <div class="text-center mb-8">
+        <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-primary-500 to-primary-600 text-white mb-4">
+          <i class="ph ph-user-plus text-3xl"></i>
+        </div>
+        <h1 class="text-2xl font-bold text-slate-900 mt-4 tracking-tight">創建賬號</h1>
+        <p class="text-slate-500 mt-1 text-sm">加入運維管理系統</p>
+      </div>
+
+      <form id="registerForm" class="space-y-4">
+        <div>
+          <label for="username" class="block text-sm font-medium text-slate-700 mb-2">
+            <i class="ph ph-user mr-2 text-slate-400"></i>用户名 <span class="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            id="username"
+            name="username"
+            required
+            class="input bg-white border-slate-200 rounded-lg focus:border-primary-500 focus:ring-primary-500"
+            placeholder="請輸入用户名"
+            autocomplete="username"
+          >
+        </div>
+
+        <div>
+          <label for="password" class="block text-sm font-medium text-slate-700 mb-2">
+            <i class="ph ph-lock-key mr-2 text-slate-400"></i>密碼 <span class="text-red-500">*</span>
+          </label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            required
+            class="input bg-white border-slate-200 rounded-lg focus:border-primary-500 focus:ring-primary-500"
+            placeholder="請輸入密碼"
+            autocomplete="new-password"
+          >
+        </div>
+
+        <div>
+          <label for="inviteCode" class="block text-sm font-medium text-slate-700 mb-2">
+            <i class="ph ph-key mr-2 text-slate-400"></i>邀請碼 (可選)
+          </label>
+          <input
+            type="text"
+            id="inviteCode"
+            name="inviteCode"
+            class="input bg-white border-slate-200 rounded-lg focus:border-primary-500 focus:ring-primary-500"
+            placeholder="填寫可獲取管理員權限"
+            autocomplete="off"
+          >
+        </div>
+
+        <button type="submit" class="btn btn-primary w-full py-3 text-base font-medium mt-4">
+          <i class="ph ph-check-circle text-xl"></i>
+          <span id="registerBtnText">註冊</span>
+        </button>
+      </form>
+
+      <div class="mt-6 text-center">
+        <p class="text-sm text-slate-500">
+          已有賬號？
+          <a href="/" class="text-primary-600 hover:text-primary-700 font-medium transition-colors">
+            立即登錄
+          </a>
+        </p>
+      </div>
+
+      <div id="msg" class="mt-4 text-sm text-center"></div>
     </div>
-    
-    <form id="registerForm" class="space-y-4">
-      <div>
-        <label for="username" class="block text-sm font-medium text-gray-700 mb-1">用户名 *</label>
-        <input type="text" id="username" name="username" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-      </div>
-      
-      <div>
-        <label for="password" class="block text-sm font-medium text-gray-700 mb-1">密碼 *</label>
-        <input type="password" id="password" name="password" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-      </div>
 
-      <div>
-        <label for="inviteCode" class="block text-sm font-medium text-gray-700 mb-1">註冊邀請碼 (選填)</label>
-        <input type="text" id="inviteCode" name="inviteCode" placeholder="填写以獲取管理員權限" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-      </div>
-      
-      <button type="submit" class="btn-primary w-full py-3 rounded-lg text-white font-medium focus:outline-none mt-4">
-        <i class="fas fa-check-circle mr-2"></i>註冊
-      </button>
-      
-      <div class="text-center mt-4">
-        <a href="/" class="text-sm text-gray-600 hover:text-gray-900">已有賬號？返回登錄</a>
-      </div>
-
-      <div id="msg" class="text-center text-sm mt-2"></div>
-    </form>
+    <p class="text-center text-xs text-slate-400 mt-6">
+      安全註冊 · 您的信息受加密保護
+    </p>
   </div>
-  
+
   <script>
-    document.getElementById('registerForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const username = document.getElementById('username').value;
-      const password = document.getElementById('password').value;
-      const inviteCode = document.getElementById('inviteCode').value;
+    document.addEventListener('DOMContentLoaded', () => {
+      const form = document.getElementById('registerForm');
+      const btnText = document.getElementById('registerBtnText');
       const msgDiv = document.getElementById('msg');
-      const button = e.target.querySelector('button');
-      
-      button.disabled = true;
-      button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>註冊中...';
-      
-      try {
-        const response = await fetch('/api/register', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username, password, inviteCode })
-        });
-        
-        const result = await response.json();
-        
-        if (result.success) {
-          msgDiv.className = 'text-green-600';
-          msgDiv.textContent = '註冊成功！正在跳轉...';
-          setTimeout(() => window.location.href = '/', 1500);
-        } else {
-          msgDiv.className = 'text-red-500';
-          msgDiv.textContent = result.message || '註冊失敗';
-          button.disabled = false;
-          button.innerHTML = '<i class="fas fa-check-circle mr-2"></i>註冊';
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const username = document.getElementById('username').value.trim();
+        const password = document.getElementById('password').value;
+        const inviteCode = document.getElementById('inviteCode').value.trim();
+        const button = form.querySelector('button');
+
+        if (!username || !password) {
+          showMessage('請填寫必填字段', 'error');
+          return;
         }
-      } catch (error) {
-        msgDiv.className = 'text-red-500';
-        msgDiv.textContent = '發生錯誤';
-        button.disabled = false;
-        button.innerHTML = '<i class="fas fa-check-circle mr-2"></i>註冊';
+
+        if (password.length < 6) {
+          showMessage('密碼長度至少 6 位', 'error');
+          return;
+        }
+
+        button.disabled = true;
+        const originalText = btnText.textContent;
+        btnText.textContent = '註冊中...';
+
+        try {
+          const response = await fetch('/api/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password, inviteCode })
+          });
+
+          const result = await response.json();
+
+          if (result.success) {
+            showMessage('註冊成功！正在跳轉...', 'success');
+            setTimeout(() => window.location.href = '/', 1500);
+          } else {
+            showMessage(result.message || '註冊失敗', 'error');
+            button.disabled = false;
+            btnText.textContent = originalText;
+          }
+        } catch (error) {
+          showMessage('網路錯誤，請稍後再試', 'error');
+          button.disabled = false;
+          btnText.textContent = originalText;
+        }
+      });
+
+      function showMessage(text, type) {
+        msgDiv.textContent = text;
+        msgDiv.className = type === 'success'
+          ? 'text-success mt-2 text-sm fade-in'
+          : 'text-red-500 mt-2 text-sm fade-in';
       }
+
+      document.getElementById('username').focus();
     });
   </script>
 </body>
@@ -249,30 +693,55 @@ const registerPage = `
 // 控制台頁面 (修正版：提交後重置也能正確顯示「已完成」)
 const dashboardPage = (role) => `
 <!DOCTYPE html>
-<html>
+<html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>控制台</title>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  ${DESIGN_SYSTEM_HEAD}
   <style>
-    .glass-card { background: white; border-radius: 1rem; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06); transition: transform 0.2s; }
-    .glass-card:hover { transform: translateY(-2px); box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1); }
-    .list-item { transition: background-color 0.2s; }
-    .list-item:hover { background-color: #f9fafb; }
+    /* Dashboard 特定样式 */
+    .stat-card {
+      position: relative;
+      padding: 1.5rem;
+      background: white;
+      border-radius: 0.75rem;
+      border: 1px solid var(--slate-200);
+      box-shadow: 0 1px 3px 0 rgba(0,0,0,0.1);
+      transition: all 0.2s ease;
+      overflow: hidden;
+    }
+
+    .stat-card:hover {
+      box-shadow: 0 10px 15px -3px rgba(0,0,0,0.1);
+      transform: translateY(-2px);
+    }
+
+    .stat-card::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 4px;
+      background: linear-gradient(90deg, var(--primary), #60a5fa);
+    }
+
+    .stat-card.warning::before { background: linear-gradient(90deg, #fbbf24, #f59e0b); }
+    .stat-card.danger::before { background: linear-gradient(90deg, #f87171, #ef4444); }
+    .stat-card.success::before { background: linear-gradient(90deg, #34d399, #10b981); }
   </style>
 </head>
-<body class="bg-gray-50 min-h-screen">
+<body class="bg-slate-50 min-h-screen">
   ${getNavHtml('dashboard', role)}
   
   <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
     <div class="mb-8 flex justify-between items-end">
       <div>
-        <h1 class="text-3xl font-bold text-gray-800" id="greeting">早安</h1>
-        <p class="text-gray-500 mt-1">今日系統運行概況</p>
+        <h1 class="text-3xl font-bold text-slate-900" id="greeting">早安</h1>
+        <p class="text-slate-500 mt-1">今日系統運行概況</p>
       </div>
-      <div class="text-right text-sm text-gray-400">
+      <div class="text-right text-sm text-slate-400">
         最後更新: <span id="lastUpdate">-</span>
       </div>
     </div>
@@ -281,94 +750,94 @@ const dashboardPage = (role) => `
     <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
       
       <!-- 今日排班 -->
-      <div class="glass-card p-6 border-l-4 border-blue-500">
+      <div class="stat-card">
         <div class="flex justify-between items-start">
           <div>
-            <p class="text-sm font-medium text-gray-500">今日排班</p>
-            <h3 class="text-2xl font-bold text-gray-800 mt-1 truncate" id="todayStaff">-</h3>
+            <p class="text-sm font-medium text-slate-500">今日排班</p>
+            <h3 class="text-2xl font-bold text-slate-900 mt-1 truncate" id="todayStaff">-</h3>
           </div>
-          <div class="p-2 bg-blue-50 rounded-lg text-blue-600"><i class="fas fa-calendar-day text-xl"></i></div>
+          <div class="p-2 bg-primary-100 rounded-lg text-primary-600"><i class="ph ph-calendar-day text-xl"></i></div>
         </div>
-        <p class="text-xs text-gray-500 mt-2" id="scheduleStatus">加載中...</p>
+        <p class="text-xs text-slate-500 mt-2" id="scheduleStatus">加載中...</p>
       </div>
 
       <!-- 排除日期統計 -->
-      <div class="glass-card p-6 border-l-4 border-red-500">
+      <div class="stat-card warning">
         <div class="flex justify-between items-start">
           <div>
-            <p class="text-sm font-medium text-gray-500">排除日期</p>
-            <h3 class="text-2xl font-bold text-gray-800 mt-1" id="exclusionCount">0</h3>
+            <p class="text-sm font-medium text-slate-500">排除日期</p>
+            <h3 class="text-2xl font-bold text-slate-900 mt-1" id="exclusionCount">0</h3>
           </div>
-          <div class="p-2 bg-red-50 rounded-lg text-red-600"><i class="fas fa-calendar-times text-xl"></i></div>
+          <div class="p-2 bg-red-100 rounded-lg text-red-600"><i class="ph ph-calendar-x text-xl"></i></div>
         </div>
-        <p class="text-xs text-gray-500 mt-2">生效中的特殊日期</p>
+        <p class="text-xs text-slate-500 mt-2">生效中的特殊日期</p>
       </div>
 
       <!-- 員工總數 -->
-      <div class="glass-card p-6 border-l-4 border-green-500">
+      <div class="stat-card success">
         <div class="flex justify-between items-start">
           <div>
-            <p class="text-sm font-medium text-gray-500">員工總數</p>
-            <h3 class="text-2xl font-bold text-gray-800 mt-1" id="staffCount">0</h3>
+            <p class="text-sm font-medium text-slate-500">員工總數</p>
+            <h3 class="text-2xl font-bold text-slate-900 mt-1" id="staffCount">0</h3>
           </div>
-          <div class="p-2 bg-green-50 rounded-lg text-green-600"><i class="fas fa-users text-xl"></i></div>
+          <div class="p-2 bg-green-100 rounded-lg text-green-600"><i class="ph ph-users text-xl"></i></div>
         </div>
-        <p class="text-xs text-gray-500 mt-2">活躍員工</p>
+        <p class="text-xs text-slate-500 mt-2">活躍員工</p>
       </div>
 
       <!-- 訂閱統計 -->
-      <div class="glass-card p-6 border-l-4 border-yellow-500">
+      <div class="stat-card danger">
         <div class="flex justify-between items-start">
           <div>
-            <p class="text-sm font-medium text-gray-500">訂閱狀態</p>
+            <p class="text-sm font-medium text-slate-500">訂閱狀態</p>
             <div class="flex items-baseline mt-1">
-                <h3 class="text-2xl font-bold text-gray-800" id="totalSubsCount">0</h3>
-                <span class="text-xs text-gray-500 ml-2">總數</span>
+                <h3 class="text-2xl font-bold text-slate-900" id="totalSubsCount">0</h3>
+                <span class="text-xs text-slate-500 ml-2">總數</span>
             </div>
           </div>
-          <div class="p-2 bg-yellow-50 rounded-lg text-yellow-600"><i class="fas fa-bell text-xl"></i></div>
+          <div class="p-2 bg-yellow-100 rounded-lg text-yellow-600"><i class="ph ph-bell text-xl"></i></div>
         </div>
         <p class="text-xs text-red-500 mt-2 font-bold" id="expiringText">0 項即將到期</p>
       </div>
     </div>
 
     <!-- 2. 主要功能區塊 -->
-    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-6 mb-8 fade-in">
       <!-- 左側：今日檢核 -->
-      <div class="glass-card lg:col-span-2 flex flex-col">
-        <div class="px-6 py-4 border-b border-gray-100 flex justify-between items-center bg-gray-50 rounded-t-xl">
-          <h3 class="text-lg font-bold text-gray-800"><i class="fas fa-clipboard-check mr-2 text-indigo-500"></i>今日機房檢核</h3>
-          <a href="/checklist" class="text-sm text-indigo-600 hover:text-indigo-800 font-medium">進入檢核 &rarr;</a>
+      <div class="card lg:col-span-2 flex flex-col">
+        <div class="px-6 py-4 border-b border-slate-200 flex justify-between items-center bg-slate-50 rounded-t-xl">
+          <h3 class="text-lg font-bold text-slate-900"><i class="ph ph-check-circle mr-2 text-primary-500"></i>今日機房檢核</h3>
+          <a href="/checklist" class="text-sm text-primary-600 hover:text-primary-700 font-medium">進入檢核 &rarr;</a>
         </div>
         <div class="p-6 flex-grow" id="todayChecklist">
-          <div class="flex flex-col items-center justify-center py-8 text-gray-400">
-            <i class="fas fa-spinner fa-spin text-3xl mb-3"></i>
-            <p>正在同步數據...</p>
+          <div class="flex flex-col items-center justify-center py-8 text-slate-400">
+            <i class="ph ph-spinner ph-spin text-3xl mb-3"></i>
+            <p class="text-sm">正在同步數據...</p>
           </div>
         </div>
       </div>
       
       <!-- 右側：最近排除日期 -->
-      <div class="glass-card flex flex-col">
-        <div class="px-6 py-4 border-b border-gray-100 bg-gray-50 rounded-t-xl flex justify-between items-center">
-          <h3 class="text-lg font-bold text-gray-800"><i class="fas fa-calendar-alt mr-2 text-red-500"></i>最近排除日期</h3>
-          <a href="/exclusions" class="${role === 'admin' ? '' : 'hidden'} text-sm text-indigo-600 hover:text-indigo-800 font-medium">日期管理 &rarr;</a>
+      <div class="card flex flex-col">
+        <div class="px-6 py-4 border-b border-slate-200 bg-slate-50 rounded-t-xl flex justify-between items-center">
+          <h3 class="text-lg font-bold text-slate-900"><i class="ph ph-calendar-slash mr-2 text-danger"></i>最近排除日期</h3>
+          <a href="/exclusions" class="${role === 'admin' ? '' : 'hidden'} text-sm text-primary-600 hover:text-primary-700 font-medium">日期管理 &rarr;</a>
         </div>
         <div class="p-4 flex-grow overflow-y-auto max-h-64" id="recentExclusionsList">
-          <div class="text-center py-4 text-gray-400 text-sm">加載中...</div>
+          <div class="text-center py-4 text-slate-400 text-sm">加載中...</div>
         </div>
       </div>
     </div>
 
     <!-- 3. 即將到期訂閱 -->
-    <div class="glass-card mb-8">
-        <div class="px-6 py-4 border-b border-gray-100 bg-gray-50 rounded-t-xl flex justify-between items-center">
-          <h3 class="text-lg font-bold text-gray-800"><i class="fas fa-clock mr-2 text-yellow-500"></i>即將到期訂閱</h3>
-          <a href="/subscriptions" class="${role === 'admin' ? '' : 'hidden'} text-sm text-indigo-600 hover:text-indigo-800 font-medium">管理訂閱 &rarr;</a>
+    <div class="card mb-8">
+        <div class="px-6 py-4 border-b border-slate-200 bg-slate-50 rounded-t-xl flex justify-between items-center">
+          <h3 class="text-lg font-bold text-slate-900"><i class="ph ph-warning mr-2 text-warning"></i>即將到期訂閱</h3>
+          <a href="/subscriptions" class="${role === 'admin' ? '' : 'hidden'} text-sm text-primary-600 hover:text-primary-700 font-medium">管理訂閱 &rarr;</a>
         </div>
         <div class="p-6">
             <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4" id="expiringSubscriptionsList">
-                <div class="text-center py-4 text-gray-400 col-span-full">加載中...</div>
+                <div class="text-center py-4 text-slate-400 col-span-full">加載中...</div>
             </div>
         </div>
     </div>
