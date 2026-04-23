@@ -67,83 +67,213 @@ const getNavHtml = (activePage, role) => `
 // 定义HTML模板 - 登錄頁面
 const loginPage = `
 <!DOCTYPE html>
-<html>
+<html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>登錄 - 運維管理系統</title>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              50: '#eff6ff',
+              100: '#dbeafe',
+              200: '#bfdbfe',
+              300: '#93c5fd',
+              400: '#60a5fa',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+            },
+            slate: {
+              50: '#f8fafc',
+              100: '#f1f5f9',
+              200: '#e2e8f0',
+              300: '#cbd5e1',
+              400: '#94a3b8',
+              500: '#64748b',
+              600: '#475569',
+              700: '#334155',
+              800: '#1e293b',
+              900: '#0f172a',
+            },
+          },
+          fontFamily: {
+            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+          },
+          boxShadow: {
+            'soft': '0 2px 15px -3px rgba(0, 0, 0, 0.07)',
+            'glow': '0 0 15px rgba(59, 130, 246, 0.3)',
+          },
+        },
+      },
+    }
+  </script>
   <style>
-    .login-container { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; }
-    .login-box { backdrop-filter: blur(8px); background-color: rgba(255, 255, 255, 0.9); box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15); }
-    .btn-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); transition: all 0.3s; }
-    .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1); }
+    body {
+      background: linear-gradient(135deg, #f8fafc 0%, #e0f2fe 50%, #f0f9ff 100%);
+      min-height: 100vh;
+    }
+
+    .login-card {
+      backdrop-filter: blur(20px);
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+      box-shadow: 0 4px 14px 0 rgba(59, 130, 246, 0.3);
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px 0 rgba(59, 130, 246, 0.4);
+    }
+
+    .input:focus {
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .fade-in {
+      animation: fadeIn 0.3s ease-out;
+    }
   </style>
 </head>
-<body class="login-container flex items-center justify-center px-4">
-  <div class="login-box p-8 rounded-xl w-full max-w-md">
-    <div class="text-center mb-8">
-      <h1 class="text-2xl font-bold text-gray-800"><i class="fas fa-server mr-2"></i>運維管理系統</h1>
-      <p class="text-gray-600 mt-2">非安全登錄</p>
-    </div>
-    
-    <form id="loginForm" class="space-y-6">
-      <div>
-        <label for="username" class="block text-sm font-medium text-gray-700 mb-1"><i class="fas fa-user mr-2"></i>用户名</label>
-        <input type="text" id="username" name="username" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-      </div>
-      
-      <div>
-        <label for="password" class="block text-sm font-medium text-gray-700 mb-1"><i class="fas fa-lock mr-2"></i>密碼</label>
-        <input type="password" id="password" name="password" required class="w-full px-4 py-3 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-      </div>
-      
-      <button type="submit" class="btn-primary w-full py-3 rounded-lg text-white font-medium focus:outline-none">
-        <i class="fas fa-sign-in-alt mr-2"></i>登錄
-      </button>
-      
-      <div class="text-center mt-4">
-        <a href="/register" class="text-sm text-indigo-600 hover:text-indigo-800">没有賬號？點击註冊</a>
+<body class="flex items-center justify-center px-4 py-8">
+  <div class="w-full max-w-md fade-in">
+    <div class="login-card p-8 rounded-2xl shadow-soft">
+      <div class="text-center mb-8">
+        <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-primary-500 to-primary-600 text-white mb-4 shadow-glow">
+          <i class="ph ph-server text-3xl"></i>
+        </div>
+        <h1 class="text-2xl font-bold text-slate-900 mt-4 tracking-tight">運維管理系統</h1>
+        <p class="text-slate-500 mt-1 text-sm">歡迎回來，請登錄您的賬戶</p>
       </div>
 
-      <div id="errorMsg" class="text-red-500 text-center text-sm"></div>
-    </form>
+      <form id="loginForm" class="space-y-5">
+        <div>
+          <label for="username" class="block text-sm font-medium text-slate-700 mb-2">
+            <i class="ph ph-user mr-2 text-slate-400"></i>用户名
+          </label>
+          <input
+            type="text"
+            id="username"
+            name="username"
+            required
+            class="input bg-white border-slate-200 rounded-lg focus:border-primary-500 focus:ring-primary-500"
+            placeholder="請輸入用户名"
+            autocomplete="username"
+          >
+        </div>
+
+        <div>
+          <label for="password" class="block text-sm font-medium text-slate-700 mb-2">
+            <i class="ph ph-lock-key mr-2 text-slate-400"></i>密碼
+          </label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            required
+            class="input bg-white border-slate-200 rounded-lg focus:border-primary-500 focus:ring-primary-500"
+            placeholder="請輸入密碼"
+            autocomplete="current-password"
+          >
+        </div>
+
+        <button type="submit" class="btn btn-primary w-full py-3 text-base font-medium">
+          <i class="ph ph-sign-in text-xl"></i>
+          <span id="loginBtnText">登錄</span>
+        </button>
+      </form>
+
+      <div class="mt-6 text-center">
+        <p class="text-sm text-slate-500">
+          還沒有賬號？
+          <a href="/register" class="text-primary-600 hover:text-primary-700 font-medium transition-colors">
+            立即註冊
+          </a>
+        </p>
+      </div>
+
+      <div id="errorMsg" class="mt-4 hidden">
+        <div class="rounded-lg bg-red-50 border border-red-200 text-red-700 px-4 py-3 text-sm flex items-center fade-in">
+          <i class="ph ph-warning-circle mr-2 text-lg"></i>
+          <span id="errorText"></span>
+        </div>
+      </div>
+    </div>
+
+    <p class="text-center text-xs text-slate-400 mt-6">
+      安全登錄 · 您的數據受加密保護
+    </p>
   </div>
-  
+
   <script>
-    document.getElementById('loginForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const username = document.getElementById('username').value;
-      const password = document.getElementById('password').value;
-      const button = e.target.querySelector('button');
-      const originalContent = button.innerHTML;
-      
-      button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>登錄中...';
-      button.disabled = true;
-      document.getElementById('errorMsg').textContent = '';
-      
-      try {
-        const response = await fetch('/api/login', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username, password })
-        });
-        
-        const result = await response.json();
-        
-        if (result.success) {
-          window.location.href = '/dashboard';
-        } else {
-          document.getElementById('errorMsg').textContent = result.message || '登錄失敗';
-          button.innerHTML = originalContent;
-          button.disabled = false;
+    document.addEventListener('DOMContentLoaded', () => {
+      const form = document.getElementById('loginForm');
+      const btnText = document.getElementById('loginBtnText');
+      const errorMsg = document.getElementById('errorMsg');
+      const errorText = document.getElementById('errorText');
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const username = document.getElementById('username').value.trim();
+        const password = document.getElementById('password').value;
+        const button = form.querySelector('button');
+
+        if (!username || !password) {
+          showError('請填寫完整信息');
+          return;
         }
-      } catch (error) {
-        document.getElementById('errorMsg').textContent = '網路錯誤，請稍後再試';
-        button.innerHTML = originalContent;
-        button.disabled = false;
+
+        button.disabled = true;
+        const originalContent = btnText.textContent;
+        btnText.textContent = '登錄中...';
+        errorMsg.classList.add('hidden');
+
+        try {
+          const response = await fetch('/api/login', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password })
+          });
+
+          const result = await response.json();
+
+          if (result.success) {
+            window.location.href = '/dashboard';
+          } else {
+            showError(result.message || '登錄失敗，請檢查用戶名和密碼');
+            button.disabled = false;
+            btnText.textContent = originalContent;
+          }
+        } catch (error) {
+          showError('網路錯誤，請稍後再試');
+          button.disabled = false;
+          btnText.textContent = originalContent;
+        }
+      });
+
+      function showError(message) {
+        errorText.textContent = message;
+        errorMsg.classList.remove('hidden');
+        errorMsg.classList.add('fade-in');
       }
+
+      document.getElementById('username').focus();
     });
   </script>
 </body>
@@ -153,91 +283,228 @@ const loginPage = `
 // 註冊頁面
 const registerPage = `
 <!DOCTYPE html>
-<html>
+<html lang="zh-TW">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>註冊 - 運維管理系統</title>
-  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
-  <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/@phosphor-icons/web"></script>
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            primary: {
+              50: '#eff6ff',
+              100: '#dbeafe',
+              200: '#bfdbfe',
+              300: '#93c5fd',
+              400: '#60a5fa',
+              500: '#3b82f6',
+              600: '#2563eb',
+              700: '#1d4ed8',
+            },
+            slate: {
+              50: '#f8fafc',
+              100: '#f1f5f9',
+              200: '#e2e8f0',
+              300: '#cbd5e1',
+              400: '#94a3b8',
+              500: '#64748b',
+              600: '#475569',
+              700: '#334155',
+              800: '#1e293b',
+              900: '#0f172a',
+            },
+          },
+          fontFamily: {
+            sans: ['Inter', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+          },
+          boxShadow: {
+            'soft': '0 2px 15px -3px rgba(0, 0, 0, 0.07)',
+            'glow': '0 0 15px rgba(59, 130, 246, 0.3)',
+          },
+        },
+      },
+    }
+  </script>
   <style>
-    .login-container { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); min-height: 100vh; }
-    .login-box { backdrop-filter: blur(8px); background-color: rgba(255, 255, 255, 0.9); box-shadow: 0 10px 25px rgba(0, 0, 0, 0.15); }
-    .btn-primary { background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); transition: all 0.3s; }
+    body {
+      background: linear-gradient(135deg, #f8fafc 0%, #e0f2fe 50%, #f0f9ff 100%);
+      min-height: 100vh;
+    }
+
+    .login-card {
+      backdrop-filter: blur(20px);
+      background: rgba(255, 255, 255, 0.95);
+      border: 1px solid rgba(255, 255, 255, 0.8);
+    }
+
+    .btn-primary {
+      background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+      box-shadow: 0 4px 14px 0 rgba(59, 130, 246, 0.3);
+      transition: all 0.2s ease;
+    }
+
+    .btn-primary:hover {
+      transform: translateY(-1px);
+      box-shadow: 0 6px 20px 0 rgba(59, 130, 246, 0.4);
+    }
+
+    .input:focus {
+      box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    .fade-in {
+      animation: fadeIn 0.3s ease-out;
+    }
   </style>
 </head>
-<body class="login-container flex items-center justify-center px-4">
-  <div class="login-box p-8 rounded-xl w-full max-w-md">
-    <div class="text-center mb-8">
-      <h1 class="text-2xl font-bold text-gray-800"><i class="fas fa-user-plus mr-2"></i>註冊賬號</h1>
-      <p class="text-gray-600 mt-2">加入運維管理系統</p>
+<body class="flex items-center justify-center px-4 py-8">
+  <div class="w-full max-w-md fade-in">
+    <div class="login-card p-8 rounded-2xl shadow-soft">
+      <div class="text-center mb-8">
+        <div class="inline-flex items-center justify-center w-16 h-16 rounded-2xl bg-gradient-to-br from-primary-500 to-primary-600 text-white mb-4">
+          <i class="ph ph-user-plus text-3xl"></i>
+        </div>
+        <h1 class="text-2xl font-bold text-slate-900 mt-4 tracking-tight">創建賬號</h1>
+        <p class="text-slate-500 mt-1 text-sm">加入運維管理系統</p>
+      </div>
+
+      <form id="registerForm" class="space-y-4">
+        <div>
+          <label for="username" class="block text-sm font-medium text-slate-700 mb-2">
+            <i class="ph ph-user mr-2 text-slate-400"></i>用户名 <span class="text-red-500">*</span>
+          </label>
+          <input
+            type="text"
+            id="username"
+            name="username"
+            required
+            class="input bg-white border-slate-200 rounded-lg focus:border-primary-500 focus:ring-primary-500"
+            placeholder="請輸入用户名"
+            autocomplete="username"
+          >
+        </div>
+
+        <div>
+          <label for="password" class="block text-sm font-medium text-slate-700 mb-2">
+            <i class="ph ph-lock-key mr-2 text-slate-400"></i>密碼 <span class="text-red-500">*</span>
+          </label>
+          <input
+            type="password"
+            id="password"
+            name="password"
+            required
+            class="input bg-white border-slate-200 rounded-lg focus:border-primary-500 focus:ring-primary-500"
+            placeholder="請輸入密碼"
+            autocomplete="new-password"
+          >
+        </div>
+
+        <div>
+          <label for="inviteCode" class="block text-sm font-medium text-slate-700 mb-2">
+            <i class="ph ph-key mr-2 text-slate-400"></i>邀請碼 (可選)
+          </label>
+          <input
+            type="text"
+            id="inviteCode"
+            name="inviteCode"
+            class="input bg-white border-slate-200 rounded-lg focus:border-primary-500 focus:ring-primary-500"
+            placeholder="填寫可獲取管理員權限"
+            autocomplete="off"
+          >
+        </div>
+
+        <button type="submit" class="btn btn-primary w-full py-3 text-base font-medium mt-4">
+          <i class="ph ph-check-circle text-xl"></i>
+          <span id="registerBtnText">註冊</span>
+        </button>
+      </form>
+
+      <div class="mt-6 text-center">
+        <p class="text-sm text-slate-500">
+          已有賬號？
+          <a href="/" class="text-primary-600 hover:text-primary-700 font-medium transition-colors">
+            立即登錄
+          </a>
+        </p>
+      </div>
+
+      <div id="msg" class="mt-4 text-sm text-center"></div>
     </div>
-    
-    <form id="registerForm" class="space-y-4">
-      <div>
-        <label for="username" class="block text-sm font-medium text-gray-700 mb-1">用户名 *</label>
-        <input type="text" id="username" name="username" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-      </div>
-      
-      <div>
-        <label for="password" class="block text-sm font-medium text-gray-700 mb-1">密碼 *</label>
-        <input type="password" id="password" name="password" required class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-      </div>
 
-      <div>
-        <label for="inviteCode" class="block text-sm font-medium text-gray-700 mb-1">註冊邀請碼 (選填)</label>
-        <input type="text" id="inviteCode" name="inviteCode" placeholder="填写以獲取管理員權限" class="w-full px-4 py-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-indigo-500">
-      </div>
-      
-      <button type="submit" class="btn-primary w-full py-3 rounded-lg text-white font-medium focus:outline-none mt-4">
-        <i class="fas fa-check-circle mr-2"></i>註冊
-      </button>
-      
-      <div class="text-center mt-4">
-        <a href="/" class="text-sm text-gray-600 hover:text-gray-900">已有賬號？返回登錄</a>
-      </div>
-
-      <div id="msg" class="text-center text-sm mt-2"></div>
-    </form>
+    <p class="text-center text-xs text-slate-400 mt-6">
+      安全註冊 · 您的信息受加密保護
+    </p>
   </div>
-  
+
   <script>
-    document.getElementById('registerForm').addEventListener('submit', async (e) => {
-      e.preventDefault();
-      const username = document.getElementById('username').value;
-      const password = document.getElementById('password').value;
-      const inviteCode = document.getElementById('inviteCode').value;
+    document.addEventListener('DOMContentLoaded', () => {
+      const form = document.getElementById('registerForm');
+      const btnText = document.getElementById('registerBtnText');
       const msgDiv = document.getElementById('msg');
-      const button = e.target.querySelector('button');
-      
-      button.disabled = true;
-      button.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i>註冊中...';
-      
-      try {
-        const response = await fetch('/api/register', {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ username, password, inviteCode })
-        });
-        
-        const result = await response.json();
-        
-        if (result.success) {
-          msgDiv.className = 'text-green-600';
-          msgDiv.textContent = '註冊成功！正在跳轉...';
-          setTimeout(() => window.location.href = '/', 1500);
-        } else {
-          msgDiv.className = 'text-red-500';
-          msgDiv.textContent = result.message || '註冊失敗';
-          button.disabled = false;
-          button.innerHTML = '<i class="fas fa-check-circle mr-2"></i>註冊';
+
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        const username = document.getElementById('username').value.trim();
+        const password = document.getElementById('password').value;
+        const inviteCode = document.getElementById('inviteCode').value.trim();
+        const button = form.querySelector('button');
+
+        if (!username || !password) {
+          showMessage('請填寫必填字段', 'error');
+          return;
         }
-      } catch (error) {
-        msgDiv.className = 'text-red-500';
-        msgDiv.textContent = '發生錯誤';
-        button.disabled = false;
-        button.innerHTML = '<i class="fas fa-check-circle mr-2"></i>註冊';
+
+        if (password.length < 6) {
+          showMessage('密碼長度至少 6 位', 'error');
+          return;
+        }
+
+        button.disabled = true;
+        const originalText = btnText.textContent;
+        btnText.textContent = '註冊中...';
+
+        try {
+          const response = await fetch('/api/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ username, password, inviteCode })
+          });
+
+          const result = await response.json();
+
+          if (result.success) {
+            showMessage('註冊成功！正在跳轉...', 'success');
+            setTimeout(() => window.location.href = '/', 1500);
+          } else {
+            showMessage(result.message || '註冊失敗', 'error');
+            button.disabled = false;
+            btnText.textContent = originalText;
+          }
+        } catch (error) {
+          showMessage('網路錯誤，請稍後再試', 'error');
+          button.disabled = false;
+          btnText.textContent = originalText;
+        }
+      });
+
+      function showMessage(text, type) {
+        msgDiv.textContent = text;
+        msgDiv.className = type === 'success'
+          ? 'text-green-600 mt-2 text-sm fade-in'
+          : 'text-red-500 mt-2 text-sm fade-in';
       }
+
+      document.getElementById('username').focus();
     });
   </script>
 </body>
